@@ -4,9 +4,8 @@ const fs = require('fs');
 
 const fsPromis = fs.promises;
 
-fsPromis.readdir(path.join(__dirname, 'secret-folder'), {
-    withFileTypes: true
-}).then(items => {
+fsPromis.readdir(path.join(__dirname, 'secret-folder'), {withFileTypes: true})
+        .then(items => {
     items.forEach(item => {
 
         if (!item.isDirectory()) {

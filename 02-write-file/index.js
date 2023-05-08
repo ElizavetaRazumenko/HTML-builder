@@ -1,4 +1,4 @@
-const { stdin, stdout, exit } = require('process');
+const { stdin,  exit } = require('process');
 
 const path = require('path');
 
@@ -7,11 +7,11 @@ const fs = require('fs');
 
 const text = fs.createWriteStream(path.join(__dirname, 'text.txt'));
 
-stdout.write('Enter your text!\n');
+console.log('Enter your text!');
 
 stdin.on('data', data => {
     if (data.toString().trim() === 'exit') {
-        stdout.write('Bye!');
+        console.log('Bye!');
         exit();
     }
     
@@ -19,6 +19,6 @@ stdin.on('data', data => {
 })
 
 process.on('SIGINT', () => {
-    stdout.write('Bye!');
+    console.log('Bye!');
         exit();
 })
