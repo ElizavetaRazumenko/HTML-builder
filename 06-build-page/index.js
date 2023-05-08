@@ -7,33 +7,25 @@ const fs = require('fs');
 const distPath = path.join(__dirname, 'project-dist');
 
 
-async function html_builder(tmpPath) {
 
-  let tmpData = await fs.promises.readFile(tmpPath, 'utf-8'); 
 
+async function stylesCopy(stylesPath) {
+  const styleText = await fs.promises.readdir(stylesPath); 
   
-  const componentsPath = path.join(__dirname, 'components');
+  const files = styleText.filter((smth) => path.extname(smth) === '.css'); 
 
+  let cssData = '';
+
+  for (const file of files) {
+    const filePath = path.join(stylesPath, file);
+    const fileData = await fs.promises.readFile(filePath, 'utf-8');
+    cssData += fileData + '\n';
+  }
   
-  const newData = tmpData.match(/\{\{(.+?)\}\}/g)
-                        .map(async (match) => {
+  const outputCSSPath = path.join(distPath, 'style.css');
 
-  const component = match.slice(2, -2) + '.html';  
-  const componentPath = path.join(componentsPath, component);
-  const componentData = await fs.promises.readFile(componentPath, 'utf-8'); 
-
-  tmpData = tmpData.replace(match, componentData);
-    
-  });
-
-
-  await Promise.all(newData);
-
-  const indexPath = path.join(__dirname, 'project-dist', 'index.html');
-  await fs.promises.writeFile(indexPath, tmpData);
+  await fs.promises.writeFile(outputCSSPath, cssData); 
 }
-
-
 
 async function assetsCopy(assets, ultimate = path.join(distPath, 'assets'), outside = true) {
   if (outside)
@@ -63,24 +55,32 @@ async function assetsCopy(assets, ultimate = path.join(distPath, 'assets'), outs
   }
 }
 
-async function stylesCopy(stylesPath) {
-  const styleText = await fs.promises.readdir(stylesPath); 
+
+async function html_builder(tmpPath) {
+
+  let tmpData = await fs.promises.readFile(tmpPath, 'utf-8'); 
+
   
-  const files = styleText.filter((smth) => path.extname(smth) === '.css'); 
+  const componentsPath = path.join(__dirname, 'components');
 
-  let cssData = '';
-
-  for (const file of files) {
-    const filePath = path.join(stylesPath, file);
-    const fileData = await fs.promises.readFile(filePath, 'utf-8');
-    cssData += fileData + '\n';
-  }
   
-  const outputCSSPath = path.join(distPath, 'style.css');
+  const newData = tmpData.match(/\{\{(.+?)\}\}/g)
+                        .map(async (match) => {
 
-  await fs.promises.writeFile(outputCSSPath, cssData); 
+  const component = match.slice(2, -2) + '.html';  
+  const componentPath = path.join(componentsPath, component);
+  const componentData = await fs.promises.readFile(componentPath, 'utf-8'); 
+
+  tmpData = tmpData.replace(match, componentData);
+    
+  });
+
+
+  await Promise.all(newData);
+
+  const indexPath = path.join(__dirname, 'project-dist', 'index.html');
+  await fs.promises.writeFile(indexPath, tmpData);
 }
-
 
 fs.mkdir(distPath, { 
   recursive: true 
