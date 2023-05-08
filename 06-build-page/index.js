@@ -12,7 +12,7 @@ const distPath = path.join(__dirname, 'project-dist');
 async function stylesCopy(stylesPath) {
   const styleText = await fs.promises.readdir(stylesPath); 
   
-  const files = styleText.filter((smth) => path.extname(smth) === '.css'); 
+  const files = styleText.filter((item) => path.extname(item) === '.css'); 
 
   let cssData = '';
 
@@ -34,7 +34,7 @@ async function assetsCopy(assets, ultimate = path.join(distPath, 'assets'), outs
     });
 
   await fs.promises.mkdir(ultimate, { 
-    ecursive: true 
+    recursive: true 
   });
 
   const assetsFiles = await fs.promises.readdir(assets); 
