@@ -9,7 +9,7 @@ const text = fs.createWriteStream(path.join(__dirname, 'text.txt'));
 
 console.log('Enter your text!');
 
-stdin.on('data', data => {
+stdin.on('data', data => {                            
     if (data.toString().trim() === 'exit') {
         console.log('Bye!');
         exit();
